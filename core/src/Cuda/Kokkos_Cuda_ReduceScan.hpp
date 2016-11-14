@@ -378,11 +378,30 @@ bool cuda_single_inter_block_reduce_scan( const FunctorType     & functor ,
     size_type * const shared = shared_data + word_count.value * BlockSizeMask ;
     size_type * const global = global_data + word_count.value * block_id ;
 
-#if (__CUDA_ARCH__ < 500)
-    for ( size_type i = threadIdx.y ; i < word_count.value ; i += blockDim.y ) { global[i] = shared[i] ; }
+__shared__ int counter;
+counter = 0;
+__syncthreads();
+atomicAdd(&counter,1);
+__syncthreads();
+int result = counter;
+if(result!=blockDim.x*blockDim.y) 
+  printf("Counter Wrong Pre Copy: %i %i %i | %i %i\n",(int) blockIdx.x, (int) threadIdx.y, (int) threadIdx.y, result, (int) blockDim.x*blockDim.y);
+__syncthreads();
+
+#ifndef KOKKOS_NVCC_REDUCE_WORKAROUND
+   for ( size_type i = threadIdx.y ; i < word_count.value ; i += blockDim.y ) { global[i] = shared[i] ; }
 #else
-    for ( size_type i = 0 ; i < word_count.value ; i += 1 ) { global[i] = shared[i] ; }
+   for ( size_type i = 0 ; i < word_count.value ; i += 1 ) { global[i] = shared[i] ; }
 #endif
+
+counter = 0;
+__syncthreads();
+atomicAdd(&counter,1);
+__syncthreads();
+ result = counter;
+if(result!=blockDim.x*blockDim.y)
+  printf("Counter Wrong Post Copy: %i %i %i | %i %i\n",(int) blockIdx.x, (int) threadIdx.y, (int) threadIdx.y, result, (int) blockDim.x*blockDim.y);
+__syncthreads();
 
   }
 
