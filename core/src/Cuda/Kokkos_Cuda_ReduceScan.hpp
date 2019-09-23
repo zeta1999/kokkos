@@ -987,7 +987,7 @@ __device__ bool cuda_single_inter_block_reduce_scan2(
   const integral_nonzero_constant<size_type, ValueTraits::StaticValueSize /
                                                  sizeof(size_type)>
       word_count(ValueTraits::value_size(functor) / sizeof(size_type));
-
+  
   // Reduce the accumulation for the entire block.
   cuda_intra_block_reduce_scan<false, FunctorType, ArgTag>(
       functor, pointer_type(shared_data));
@@ -1003,16 +1003,35 @@ __device__ bool cuda_single_inter_block_reduce_scan2(
       global[i] = shared[i];
     }
   }
-
+  
   // Contributing blocks note that their contribution has been completed via an
   // atomic-increment flag If this block is not the last block to contribute to
   // this group then the block is done.
-  const bool is_last_block = !__syncthreads_or(
-      threadIdx.y
-          ? 0
-          : (1 + atomicInc(global_flags, block_count - 1) < block_count));
 
+  __shared__ int fence_me_1, fence_me_2;
+  fence_me_1 = 0; fence_me_2 = 0;
+  __syncthreads();
+  atomicAdd(&fence_me_1,1);
+  __syncthreads();
+  int fence_result_1 = fence_me_1;
+  __syncthreads();
+  __threadfence();
+  int current_count=0;
+  if(threadIdx.y==0)
+    current_count = atomicInc(global_flags, block_count - 1);
+  int syncthreadsorinput = int(threadIdx.y? 0: (1 + current_count < block_count));
+  const bool is_last_block = !__syncthreads_or(syncthreadsorinput);
+  
+  __syncthreads();
+  atomicAdd(&fence_me_2,1);
+  __syncthreads();
+  int fence_result_2 = fence_me_2;
+  __syncthreads();
+  printf("IsLastBlock: %i %i %i %i %i %i %i %i %i\n",fence_result_1,fence_result_2,
+    int(blockIdx.x),int(threadIdx.y),is_last_block?1:0,int(block_count),int(gridDim.x),current_count,syncthreadsorinput);
+  
   if (is_last_block) {
+    __threadfence();
     const size_type b =
         (long(block_count) * long(threadIdx.y)) >> BlockSizeShift;
     const size_type e =
@@ -1020,12 +1039,17 @@ __device__ bool cuda_single_inter_block_reduce_scan2(
 
     {
       void* const shared_ptr = shared_data + word_count.value * threadIdx.y;
-      /* reference_type shared_value = */ ValueInit::init(functor, shared_ptr);
+      ValueInit::init(functor, shared_ptr);
 
       for (size_type i = b; i < e; ++i) {
+        #ifdef SCANTEST
+        values[i] = *((ptrdiff_t*)global_data + word_count.value * i);
+        #endif
+        printf("Values on device: %i %li\n",int(i),*((ptrdiff_t*)global_data + word_count.value * i));
         ValueJoin::join(functor, shared_ptr,
                         global_data + word_count.value * i);
       }
+      __threadfence();
     }
 
     cuda_intra_block_reduce_scan<DoScan, FunctorType, ArgTag>(
@@ -1058,12 +1082,12 @@ __device__ bool cuda_single_inter_block_reduce_scan(
     const Cuda::size_type block_count, Cuda::size_type* const shared_data,
     Cuda::size_type* const global_data, Cuda::size_type* const global_flags) {
   typedef FunctorValueTraits<FunctorType, ArgTag> ValueTraits;
-  if (!DoScan && ValueTraits::StaticValueSize)
+/*  if (!DoScan && ValueTraits::StaticValueSize)
     return Kokkos::Impl::CudaReductionsFunctor<
         FunctorType, ArgTag, false, (ValueTraits::StaticValueSize > 16)>::
         scalar_inter_block_reduction(functor, block_id, block_count,
                                      shared_data, global_data, global_flags);
-  else
+  else*/
     return cuda_single_inter_block_reduce_scan2<DoScan, FunctorType, ArgTag>(
         functor, block_id, block_count, shared_data, global_data, global_flags);
 }
