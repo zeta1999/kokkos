@@ -95,12 +95,12 @@ class ReduceFunctor {
 };
 
 template <class DeviceType>
-class ReduceFunctorFinal : public ReduceFunctor<long, DeviceType> {
+class ReduceFunctorFinal : public ReduceFunctor<int64_t, DeviceType> {
  public:
-  typedef typename ReduceFunctor<long, DeviceType>::value_type value_type;
+  typedef typename ReduceFunctor<int64_t, DeviceType>::value_type value_type;
 
   KOKKOS_INLINE_FUNCTION
-  ReduceFunctorFinal(const size_t n) : ReduceFunctor<long, DeviceType>(n) {}
+  ReduceFunctorFinal(const size_t n) : ReduceFunctor<int64_t, DeviceType>(n) {}
 
   KOKKOS_INLINE_FUNCTION
   void final(value_type& dst) const {
@@ -198,11 +198,11 @@ class RuntimeReduceMinMax {
 
 template <class DeviceType>
 class RuntimeReduceFunctorFinal
-    : public RuntimeReduceFunctor<long, DeviceType> {
+    : public RuntimeReduceFunctor<int64_t, DeviceType> {
  public:
-  typedef RuntimeReduceFunctor<long, DeviceType> base_type;
+  typedef RuntimeReduceFunctor<int64_t, DeviceType> base_type;
   typedef typename base_type::value_type value_type;
-  typedef long scalar_type;
+  typedef int64_t scalar_type;
 
   RuntimeReduceFunctorFinal(const size_t theNwork, const size_t count)
       : base_type(theNwork, count) {}
@@ -237,8 +237,8 @@ class TestReduce {
 
     value_type result[Repeat];
 
-    const unsigned long nw = nwork;
-    const unsigned long nsum =
+    const uint64_t nw = nwork;
+    const uint64_t nsum =
         nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned i = 0; i < Repeat; ++i) {
@@ -247,7 +247,7 @@ class TestReduce {
 
     for (unsigned i = 0; i < Repeat; ++i) {
       for (unsigned j = 0; j < Count; ++j) {
-        const unsigned long correct = 0 == j % 3 ? nw : nsum;
+        const uint64_t correct = 0 == j % 3 ? nw : nsum;
         ASSERT_EQ((ScalarType)correct, result[i].value[j]);
       }
     }
@@ -262,8 +262,8 @@ class TestReduce {
 
     value_type result[Repeat];
 
-    const unsigned long nw = nwork;
-    const unsigned long nsum =
+    const uint64_t nw = nwork;
+    const uint64_t nsum =
         nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned i = 0; i < Repeat; ++i) {
@@ -277,7 +277,7 @@ class TestReduce {
 
     for (unsigned i = 0; i < Repeat; ++i) {
       for (unsigned j = 0; j < Count; ++j) {
-        const unsigned long correct = 0 == j % 3 ? nw : nsum;
+        const uint64_t correct = 0 == j % 3 ? nw : nsum;
         ASSERT_EQ((ScalarType)correct, -result[i].value[j]);
       }
     }
@@ -305,8 +305,8 @@ class TestReduceDynamic {
 
     ScalarType result[Repeat][Count];
 
-    const unsigned long nw = nwork;
-    const unsigned long nsum =
+    const uint64_t nw = nwork;
+    const uint64_t nsum =
         nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned i = 0; i < Repeat; ++i) {
@@ -320,7 +320,7 @@ class TestReduceDynamic {
 
     for (unsigned i = 0; i < Repeat; ++i) {
       for (unsigned j = 0; j < Count; ++j) {
-        const unsigned long correct = 0 == j % 3 ? nw : nsum;
+        const uint64_t correct = 0 == j % 3 ? nw : nsum;
         ASSERT_EQ((ScalarType)correct, result[i][j]);
       }
     }
@@ -351,7 +351,7 @@ class TestReduceDynamic {
           const ScalarType correct = (j % 2) ? amax : amin;
           ASSERT_EQ((ScalarType)correct, result[i][j]);
         } else {
-          const unsigned long correct = j % 2 ? 1 : nwork;
+          const uint64_t correct = j % 2 ? 1 : nwork;
           ASSERT_EQ((ScalarType)correct, result[i][j]);
         }
       }
@@ -366,8 +366,8 @@ class TestReduceDynamic {
 
     typename functor_type::scalar_type result[Repeat][Count];
 
-    const unsigned long nw = nwork;
-    const unsigned long nsum =
+    const uint64_t nw = nwork;
+    const uint64_t nsum =
         nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned i = 0; i < Repeat; ++i) {
@@ -381,7 +381,7 @@ class TestReduceDynamic {
 
     for (unsigned i = 0; i < Repeat; ++i) {
       for (unsigned j = 0; j < Count; ++j) {
-        const unsigned long correct = 0 == j % 3 ? nw : nsum;
+        const uint64_t correct = 0 == j % 3 ? nw : nsum;
         ASSERT_EQ((ScalarType)correct, -result[i][j]);
       }
     }
@@ -405,8 +405,8 @@ class TestReduceDynamicView {
 
     const unsigned CountLimit = 23;
 
-    const unsigned long nw = nwork;
-    const unsigned long nsum =
+    const uint64_t nw = nwork;
+    const uint64_t nsum =
         nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned count = 0; count < CountLimit; ++count) {
@@ -425,7 +425,7 @@ class TestReduceDynamicView {
       }
 
       for (unsigned j = 0; j < count; ++j) {
-        const unsigned long correct = 0 == j % 3 ? nw : nsum;
+        const uint64_t correct = 0 == j % 3 ? nw : nsum;
         ASSERT_EQ(host_result(j), (ScalarType)correct);
         host_result(j) = 0;
       }
@@ -435,9 +435,9 @@ class TestReduceDynamicView {
 
 }  // namespace
 
-TEST(TEST_CATEGORY, long_reduce) {
-  TestReduce<long, TEST_EXECSPACE>(0);
-  TestReduce<long, TEST_EXECSPACE>(1000000);
+TEST(TEST_CATEGORY, int64_t_reduce) {
+  TestReduce<int64_t, TEST_EXECSPACE>(0);
+  TestReduce<int64_t, TEST_EXECSPACE>(1000000);
 }
 
 TEST(TEST_CATEGORY, double_reduce) {
@@ -445,9 +445,9 @@ TEST(TEST_CATEGORY, double_reduce) {
   TestReduce<double, TEST_EXECSPACE>(1000000);
 }
 
-TEST(TEST_CATEGORY, long_reduce_dynamic) {
-  TestReduceDynamic<long, TEST_EXECSPACE>(0);
-  TestReduceDynamic<long, TEST_EXECSPACE>(1000000);
+TEST(TEST_CATEGORY, int64_t_reduce_dynamic) {
+  TestReduceDynamic<int64_t, TEST_EXECSPACE>(0);
+  TestReduceDynamic<int64_t, TEST_EXECSPACE>(1000000);
 }
 
 TEST(TEST_CATEGORY, double_reduce_dynamic) {
@@ -455,9 +455,9 @@ TEST(TEST_CATEGORY, double_reduce_dynamic) {
   TestReduceDynamic<double, TEST_EXECSPACE>(1000000);
 }
 
-TEST(TEST_CATEGORY, long_reduce_dynamic_view) {
-  TestReduceDynamicView<long, TEST_EXECSPACE>(0);
-  TestReduceDynamicView<long, TEST_EXECSPACE>(1000000);
+TEST(TEST_CATEGORY, int64_t_reduce_dynamic_view) {
+  TestReduceDynamicView<int64_t, TEST_EXECSPACE>(0);
+  TestReduceDynamicView<int64_t, TEST_EXECSPACE>(1000000);
 }
 
 }  // namespace Test
