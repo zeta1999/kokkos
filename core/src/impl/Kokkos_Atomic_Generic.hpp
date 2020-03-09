@@ -489,7 +489,7 @@ KOKKOS_INLINE_FUNCTION T atomic_exchange(volatile T* const dest, const T val) {
 
 template <typename T>
 KOKKOS_INLINE_FUNCTION void atomic_add(volatile T* const dest, const T val) {
-  (void) atomic_fetch_add(dest, val);
+  (void)atomic_fetch_add(dest, val);
 }
 
 template <typename T>

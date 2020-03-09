@@ -263,9 +263,8 @@ class TestReduceTeam {
 
     value_type result[Repeat];
 
-    const uint64_t nw = nwork;
-    const uint64_t nsum =
-        nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
+    const uint64_t nw   = nwork;
+    const uint64_t nsum = nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     policy_type team_exec(nw, 1);
 
@@ -333,7 +332,7 @@ class ScanTeamFunctor {
                   value_type &error) const {
     if (0 == ind.league_rank() && 0 == ind.team_rank()) {
       const int64_t thread_count = ind.league_size() * ind.team_size();
-      total()                     = (thread_count * (thread_count + 1)) / 2;
+      total()                    = (thread_count * (thread_count + 1)) / 2;
     }
 
     // Team max:
@@ -345,13 +344,13 @@ class ScanTeamFunctor {
           "ScanTeamFunctor[%d.%d of %d.%d] reduce_max_answer(%ld) != "
           "reduce_max(%ld)\n",
           ind.league_rank(), ind.team_rank(), ind.league_size(),
-          ind.team_size(),
-          (int64_t)(ind.league_rank() + (ind.team_size() - 1)), m);
+          ind.team_size(), (int64_t)(ind.league_rank() + (ind.team_size() - 1)),
+          m);
     }
 
     // Scan:
     const int64_t answer = (ind.league_rank() + 1) * ind.team_rank() +
-                            (ind.team_rank() * (ind.team_rank() + 1)) / 2;
+                           (ind.team_rank() * (ind.team_rank() + 1)) / 2;
 
     const int64_t result =
         ind.team_scan(ind.league_rank() + 1 + ind.team_rank() + 1);

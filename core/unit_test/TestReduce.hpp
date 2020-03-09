@@ -237,9 +237,8 @@ class TestReduce {
 
     value_type result[Repeat];
 
-    const uint64_t nw = nwork;
-    const uint64_t nsum =
-        nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
+    const uint64_t nw   = nwork;
+    const uint64_t nsum = nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned i = 0; i < Repeat; ++i) {
       Kokkos::parallel_reduce(nwork, functor_type(nwork), result[i]);
@@ -262,9 +261,8 @@ class TestReduce {
 
     value_type result[Repeat];
 
-    const uint64_t nw = nwork;
-    const uint64_t nsum =
-        nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
+    const uint64_t nw   = nwork;
+    const uint64_t nsum = nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned i = 0; i < Repeat; ++i) {
       if (i % 2 == 0) {
@@ -305,9 +303,8 @@ class TestReduceDynamic {
 
     ScalarType result[Repeat][Count];
 
-    const uint64_t nw = nwork;
-    const uint64_t nsum =
-        nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
+    const uint64_t nw   = nwork;
+    const uint64_t nsum = nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned i = 0; i < Repeat; ++i) {
       if (i % 2 == 0) {
@@ -366,9 +363,8 @@ class TestReduceDynamic {
 
     typename functor_type::scalar_type result[Repeat][Count];
 
-    const uint64_t nw = nwork;
-    const uint64_t nsum =
-        nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
+    const uint64_t nw   = nwork;
+    const uint64_t nsum = nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned i = 0; i < Repeat; ++i) {
       if (i % 2 == 0) {
@@ -405,9 +401,8 @@ class TestReduceDynamicView {
 
     const unsigned CountLimit = 23;
 
-    const uint64_t nw = nwork;
-    const uint64_t nsum =
-        nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
+    const uint64_t nw   = nwork;
+    const uint64_t nsum = nw % 2 ? nw * ((nw + 1) / 2) : (nw / 2) * (nw + 1);
 
     for (unsigned count = 0; count < CountLimit; ++count) {
       result_type result("result", count);

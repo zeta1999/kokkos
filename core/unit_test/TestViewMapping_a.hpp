@@ -77,8 +77,9 @@ void test_view_mapping() {
   typedef Kokkos::Impl::ViewDimension<0, 0, 0, 0, 0, 0, 0, 0>
       dim_s0_s0_s0_s0_s0_s0_s0_s0;
 
-  // Fully static dimensions should not be larger than an int.
-  #ifndef _WIN32 // For some reason on Windows the first test here fails with sie being 7 bytes on windows???
+// Fully static dimensions should not be larger than an int.
+#ifndef _WIN32  // For some reason on Windows the first test here fails with sie
+                // being 7 bytes on windows???
   ASSERT_LE(sizeof(dim_0), sizeof(int));
   ASSERT_LE(sizeof(dim_s2), sizeof(int));
   ASSERT_LE(sizeof(dim_s2_s3), sizeof(int));
@@ -99,7 +100,7 @@ void test_view_mapping() {
   ASSERT_EQ(sizeof(dim_s0_s0_s0_s0_s0_s0), 6 * sizeof(unsigned));
   ASSERT_LE(sizeof(dim_s0_s0_s0_s0_s0_s0_s0), 8 * sizeof(unsigned));
   ASSERT_EQ(sizeof(dim_s0_s0_s0_s0_s0_s0_s0_s0), 8 * sizeof(unsigned));
-  #endif
+#endif
   static_assert(int(dim_0::rank) == int(0), "");
   static_assert(int(dim_0::rank_dynamic) == int(0), "");
   static_assert(int(dim_0::ArgN0) == 1, "");
@@ -1135,7 +1136,8 @@ struct TestViewMapOperator {
               for (size_t i2 = 0; i2 < n2; ++i2)
                 for (size_t i1 = 0; i1 < n1; ++i1) {
 #ifdef KOKKOS_ENABLE_DEPRECATED_CODE
-                  const int64_t d = &v(i0, i1, i2, i3, i4, i5, i6, i7) - base_ptr;
+                  const int64_t d =
+                      &v(i0, i1, i2, i3, i4, i5, i6, i7) - base_ptr;
 #else
                   const int64_t d =
                       &v.access(i0, i1, i2, i3, i4, i5, i6, i7) - base_ptr;
@@ -1173,7 +1175,8 @@ struct TestViewMapOperator {
               for (size_t i6 = 0; i6 < n6; ++i6)
                 for (size_t i7 = 0; i7 < n7; ++i7) {
 #ifdef KOKKOS_ENABLE_DEPRECATED_CODE
-                  const int64_t d = &v(i0, i1, i2, i3, i4, i5, i6, i7) - base_ptr;
+                  const int64_t d =
+                      &v(i0, i1, i2, i3, i4, i5, i6, i7) - base_ptr;
 #else
                   const int64_t d =
                       &v.access(i0, i1, i2, i3, i4, i5, i6, i7) - base_ptr;

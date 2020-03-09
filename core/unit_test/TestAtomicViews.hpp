@@ -491,7 +491,8 @@ struct MinusEqualAtomicViewFunctor {
 
   // Wrap the result view in an atomic view, use this for operator.
   MinusEqualAtomicViewFunctor(const view_type& input_,
-                              view_type& even_odd_result_, const int64_t length_)
+                              view_type& even_odd_result_,
+                              const int64_t length_)
       : input(input_), even_odd_result(even_odd_result_), length(length_) {}
 
   KOKKOS_INLINE_FUNCTION
@@ -626,10 +627,11 @@ T TimesEqualAtomicView(const int64_t input_length, const int64_t remainder) {
 }
 
 template <class T>
-T TimesEqualAtomicViewCheck(const int64_t input_length, const int64_t remainder) {
+T TimesEqualAtomicViewCheck(const int64_t input_length,
+                            const int64_t remainder) {
   // Analytical result.
   const int64_t N = input_length;
-  T result     = 1.0;
+  T result        = 1.0;
 
   for (int64_t i = 2; i < N; ++i) {
     if (i % (remainder + 1) == remainder) {
@@ -720,7 +722,7 @@ T DivEqualAtomicView(const int64_t input_length, const int64_t remainder) {
 template <class T>
 T DivEqualAtomicViewCheck(const int64_t input_length, const int64_t remainder) {
   const int64_t N = input_length;
-  T result     = 12121212121.0;
+  T result        = 12121212121.0;
   for (int64_t i = 2; i < N; ++i) {
     if (i % (remainder + 1) == remainder) {
       result /= 1.0;
@@ -811,7 +813,7 @@ T ModEqualAtomicView(const int64_t input_length, const int64_t remainder) {
 template <class T>
 T ModEqualAtomicViewCheck(const int64_t input_length, const int64_t remainder) {
   const int64_t N = input_length;
-  T result     = 12121212121;
+  T result        = 12121212121;
   for (int64_t i = 2; i < N; ++i) {
     if (i % (remainder + 1) == remainder) {
       result %= 1;
@@ -1164,7 +1166,7 @@ T AndEqualAtomicView(const int64_t input_length) {
 template <class T>
 T AndEqualAtomicViewCheck(const int64_t input_length) {
   const int64_t N = input_length;
-  T result[2]  = {1};
+  T result[2]     = {1};
   for (int64_t i = 0; i < N; ++i) {
     if (N % 2 == 0) {
       result[0] &= (T)i;
@@ -1257,7 +1259,7 @@ T OrEqualAtomicView(const int64_t input_length) {
 template <class T>
 T OrEqualAtomicViewCheck(const int64_t input_length) {
   const int64_t N = input_length;
-  T result[2]  = {0};
+  T result[2]     = {0};
   for (int64_t i = 0; i < N; ++i) {
     if (i % 2 == 0) {
       result[0] |= (T)i;
@@ -1350,7 +1352,7 @@ T XOrEqualAtomicView(const int64_t input_length) {
 template <class T>
 T XOrEqualAtomicViewCheck(const int64_t input_length) {
   const int64_t N = input_length;
-  T result[2]  = {0};
+  T result[2]     = {0};
   for (int64_t i = 0; i < N; ++i) {
     if (i % 2 == 0) {
       result[0] ^= (T)i;
