@@ -592,7 +592,7 @@ struct FunctorTeamShmemSize<
 template <class FunctorType>
 struct FunctorTeamShmemSize<FunctorType, true, true> {
   static inline size_t value(const FunctorType& f, int team_size) {
-    static_assert(false,
+    Kokkos::abort(
                   "Functor with both team_shmem_size and shmem_size defined is "
                   "not allowed");
     return 0;
