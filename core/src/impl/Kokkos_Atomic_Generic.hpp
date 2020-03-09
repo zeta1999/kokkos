@@ -475,6 +475,7 @@ KOKKOS_INLINE_FUNCTION T atomic_fetch_sub(volatile T* const dest, const T val) {
 }
 #endif
 
+#ifndef KOKKOS_ENABLE_SERIAL_ATOMICS
 template <typename T>
 KOKKOS_INLINE_FUNCTION T atomic_exchange(volatile T* const dest, const T val) {
   T oldval = *dest;
@@ -486,6 +487,7 @@ KOKKOS_INLINE_FUNCTION T atomic_exchange(volatile T* const dest, const T val) {
 
   return oldval;
 }
+#endif
 
 template <typename T>
 KOKKOS_INLINE_FUNCTION void atomic_add(volatile T* const dest, const T val) {
