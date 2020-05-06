@@ -194,6 +194,29 @@ struct ViewCtorProp<void, T *> {
   type value;
 };
 
+template <typename T>
+struct ViewCtorProp<T *> {
+  ViewCtorProp()                     = default;
+  ViewCtorProp(const ViewCtorProp &) = default;
+  ViewCtorProp &operator=(const ViewCtorProp &) = default;
+
+  typedef T *type;
+
+  KOKKOS_INLINE_FUNCTION
+  ViewCtorProp(const type arg) : value(arg) {}
+
+  enum { has_pointer = true };
+  using pointer_type = type;
+  type value;
+};
+
+
+template <typename... Args>
+using this_template = ViewCtorProp<Args...>;
+
+template <typename Arg>
+using this_base = ViewCtorProp<void, Arg>;
+
 template <typename... P>
 struct ViewCtorProp : public ViewCtorProp<void, P>... {
  private:
@@ -235,11 +258,16 @@ struct ViewCtorProp : public ViewCtorProp<void, P>... {
       : ViewCtorProp<void, pointer_type>(arg0),
         ViewCtorProp<void, typename ViewCtorProp<void, Args>::type>(args)... {}
 
+  KOKKOS_INLINE_FUNCTION ViewCtorProp(pointer_type arg0)
+      : ViewCtorProp<void, pointer_type>(arg0) {}
+
   /* Copy from a matching property subset */
+  
+
   template <typename... Args>
-  ViewCtorProp(ViewCtorProp<Args...> const &arg)
-      : ViewCtorProp<void, Args>(
-            static_cast<ViewCtorProp<void, Args> const &>(arg))... {
+  ViewCtorProp(this_template<Args...> const &arg)
+      : this_base<Args>(
+            static_cast<this_base<Args> const &>(arg))... {
     (void)arg;
   }
 };

@@ -60,7 +60,6 @@ namespace Kokkos {
 
 #if defined(KOKKOS_ENABLE_CUDA)
 #if defined(__CUDA_ARCH__) || defined(KOKKOS_IMPL_CUDA_CLANG_WORKAROUND)
-
 // Support for int, unsigned int, unsigned long long int, and float
 
 __inline__ __device__ int atomic_fetch_add(volatile int* const dest,

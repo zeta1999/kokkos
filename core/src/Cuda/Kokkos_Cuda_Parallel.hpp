@@ -666,15 +666,17 @@ class ParallelFor<FunctorType, Kokkos::MDRangePolicy<Traits...>, Kokkos::Cuda> {
   }
 
   inline void execute() const {
+    using namespace std;
+
     if (m_rp.m_num_tiles == 0) return;
     const array_index_type maxblocks = static_cast<array_index_type>(
         m_rp.space().impl_internal_space_instance()->m_maxBlock);
     if (RP::rank == 2) {
       const dim3 block(m_rp.m_tile[0], m_rp.m_tile[1], 1);
       const dim3 grid(
-          std::min((m_rp.m_upper[0] - m_rp.m_lower[0] + block.x - 1) / block.x,
+          min((m_rp.m_upper[0] - m_rp.m_lower[0] + block.x - 1) / block.x,
                    maxblocks),
-          std::min((m_rp.m_upper[1] - m_rp.m_lower[1] + block.y - 1) / block.y,
+          min((m_rp.m_upper[1] - m_rp.m_lower[1] + block.y - 1) / block.y,
                    maxblocks),
           1);
       CudaParallelLaunch<ParallelFor, LaunchBounds>(
@@ -683,11 +685,11 @@ class ParallelFor<FunctorType, Kokkos::MDRangePolicy<Traits...>, Kokkos::Cuda> {
     } else if (RP::rank == 3) {
       const dim3 block(m_rp.m_tile[0], m_rp.m_tile[1], m_rp.m_tile[2]);
       const dim3 grid(
-          std::min((m_rp.m_upper[0] - m_rp.m_lower[0] + block.x - 1) / block.x,
+          min((m_rp.m_upper[0] - m_rp.m_lower[0] + block.x - 1) / block.x,
                    maxblocks),
-          std::min((m_rp.m_upper[1] - m_rp.m_lower[1] + block.y - 1) / block.y,
+          min((m_rp.m_upper[1] - m_rp.m_lower[1] + block.y - 1) / block.y,
                    maxblocks),
-          std::min((m_rp.m_upper[2] - m_rp.m_lower[2] + block.z - 1) / block.z,
+          min((m_rp.m_upper[2] - m_rp.m_lower[2] + block.z - 1) / block.z,
                    maxblocks));
       CudaParallelLaunch<ParallelFor, LaunchBounds>(
           *this, grid, block, 0, m_rp.space().impl_internal_space_instance(),
@@ -698,12 +700,12 @@ class ParallelFor<FunctorType, Kokkos::MDRangePolicy<Traits...>, Kokkos::Cuda> {
       const dim3 block(m_rp.m_tile[0] * m_rp.m_tile[1], m_rp.m_tile[2],
                        m_rp.m_tile[3]);
       const dim3 grid(
-          std::min(
+          min(
               static_cast<index_type>(m_rp.m_tile_end[0] * m_rp.m_tile_end[1]),
               static_cast<index_type>(maxblocks)),
-          std::min((m_rp.m_upper[2] - m_rp.m_lower[2] + block.y - 1) / block.y,
+          min((m_rp.m_upper[2] - m_rp.m_lower[2] + block.y - 1) / block.y,
                    maxblocks),
-          std::min((m_rp.m_upper[3] - m_rp.m_lower[3] + block.z - 1) / block.z,
+          min((m_rp.m_upper[3] - m_rp.m_lower[3] + block.z - 1) / block.z,
                    maxblocks));
       CudaParallelLaunch<ParallelFor, LaunchBounds>(
           *this, grid, block, 0, m_rp.space().impl_internal_space_instance(),
@@ -714,13 +716,13 @@ class ParallelFor<FunctorType, Kokkos::MDRangePolicy<Traits...>, Kokkos::Cuda> {
       const dim3 block(m_rp.m_tile[0] * m_rp.m_tile[1],
                        m_rp.m_tile[2] * m_rp.m_tile[3], m_rp.m_tile[4]);
       const dim3 grid(
-          std::min(
+          min(
               static_cast<index_type>(m_rp.m_tile_end[0] * m_rp.m_tile_end[1]),
               static_cast<index_type>(maxblocks)),
-          std::min(
+          min(
               static_cast<index_type>(m_rp.m_tile_end[2] * m_rp.m_tile_end[3]),
               static_cast<index_type>(maxblocks)),
-          std::min((m_rp.m_upper[4] - m_rp.m_lower[4] + block.z - 1) / block.z,
+          min((m_rp.m_upper[4] - m_rp.m_lower[4] + block.z - 1) / block.z,
                    maxblocks));
       CudaParallelLaunch<ParallelFor, LaunchBounds>(
           *this, grid, block, 0, m_rp.space().impl_internal_space_instance(),
@@ -732,13 +734,13 @@ class ParallelFor<FunctorType, Kokkos::MDRangePolicy<Traits...>, Kokkos::Cuda> {
                        m_rp.m_tile[2] * m_rp.m_tile[3],
                        m_rp.m_tile[4] * m_rp.m_tile[5]);
       const dim3 grid(
-          std::min(
+          min(
               static_cast<index_type>(m_rp.m_tile_end[0] * m_rp.m_tile_end[1]),
               static_cast<index_type>(maxblocks)),
-          std::min(
+          min(
               static_cast<index_type>(m_rp.m_tile_end[2] * m_rp.m_tile_end[3]),
               static_cast<index_type>(maxblocks)),
-          std::min(
+          min(
               static_cast<index_type>(m_rp.m_tile_end[4] * m_rp.m_tile_end[5]),
               static_cast<index_type>(maxblocks)));
       CudaParallelLaunch<ParallelFor, LaunchBounds>(

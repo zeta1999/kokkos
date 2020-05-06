@@ -66,6 +66,7 @@ ELSE()
   LIST(REMOVE_ITEM KOKKOS_CORE_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/impl/Kokkos_Serial.cpp)
   LIST(REMOVE_ITEM KOKKOS_CORE_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/impl/Kokkos_Serial_task.cpp)
 ENDIF()
+add_compile_options(-x cu)
 
 KOKKOS_ADD_LIBRARY(
   kokkoscore

@@ -55,7 +55,7 @@
 #include <string>
 
 #include <Kokkos_HostSpace.hpp>
-
+#include <impl/Kokkos_Profiling_Interface.hpp>
 #include <Cuda/Kokkos_Cuda_abort.hpp>
 
 #ifdef KOKKOS_IMPL_DEBUG_CUDA_PIN_UVM_TO_HOST

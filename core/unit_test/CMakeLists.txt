@@ -13,6 +13,7 @@ KOKKOS_ADD_TEST_LIBRARY(
   SOURCES ${GTEST_SOURCE_DIR}/gtest/gtest-all.cc
 )
 #These can be direct, no need for Tribits or Kokkos wrappers
+add_compile_options(-x cu)
 
 # WORKAROUND FOR HIPCC
 IF(Kokkos_ENABLE_HIP)
@@ -23,7 +24,7 @@ ENDIF()
 
 TARGET_INCLUDE_DIRECTORIES(kokkos_gtest PUBLIC ${GTEST_SOURCE_DIR})
 #Gtest minimally requires C++11
-TARGET_COMPILE_FEATURES(kokkos_gtest PUBLIC cxx_std_11)
+#TARGET_COMPILE_FEATURES(kokkos_gtest PUBLIC cxx_std_11)
 
 #
 # Define Incremental Testing Feature Levels

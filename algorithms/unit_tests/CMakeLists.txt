@@ -27,7 +27,7 @@ ELSE()
   TARGET_COMPILE_DEFINITIONS(kokkosalgorithms_gtest PUBLIC "-DGTEST_HAS_PTHREAD=0")
 ENDIF()
 
-TARGET_COMPILE_FEATURES(kokkosalgorithms_gtest PUBLIC cxx_std_11)
+#TARGET_COMPILE_FEATURES(kokkosalgorithms_gtest PUBLIC cxx_std_11)
 
 SET(SOURCES
   UnitTestMain.cpp
