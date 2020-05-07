@@ -20,6 +20,9 @@ KOKKOS_ADD_TEST_LIBRARY(
   HEADERS ${GTEST_SOURCE_DIR}/gtest/gtest.h
   SOURCES ${GTEST_SOURCE_DIR}/gtest/gtest-all.cc
 )
+#These can be direct, no need for Tribits or Kokkos wrappers
+add_compile_options(-x cu)
+
 # WORKAROUND FOR HIPCC
 IF(Kokkos_ENABLE_HIP)
   TARGET_COMPILE_DEFINITIONS(kokkosalgorithms_gtest PUBLIC "-DGTEST_HAS_PTHREAD=0 --amdgpu-target=gfx906")

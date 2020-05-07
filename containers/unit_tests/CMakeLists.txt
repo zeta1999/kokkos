@@ -2,6 +2,8 @@
 KOKKOS_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 KOKKOS_INCLUDE_DIRECTORIES(REQUIRED_DURING_INSTALLATION_TESTING ${CMAKE_CURRENT_SOURCE_DIR})
 KOKKOS_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR}/../src )
+#These can be direct, no need for Tribits or Kokkos wrappers
+add_compile_options(-x cu)
 
 foreach(Tag Threads;Serial;OpenMP;HPX;Cuda)
   # Because there is always an exception to the rule

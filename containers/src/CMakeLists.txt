@@ -6,6 +6,8 @@ KOKKOS_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 KOKKOS_INCLUDE_DIRECTORIES(${CMAKE_CURRENT_SOURCE_DIR})
 
 #-----------------------------------------------------------------------------
+#These can be direct, no need for Tribits or Kokkos wrappers
+add_compile_options(-x cu)
 
 SET(KOKKOS_CONTAINERS_SRCS)
 APPEND_GLOB(KOKKOS_CONTAINERS_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/impl/*.cpp)

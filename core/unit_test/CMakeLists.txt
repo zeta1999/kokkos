@@ -64,8 +64,7 @@ foreach(Tag Threads;Serial;OpenMP;Cuda;HPX;OpenMPTarget;HIP)
   endif()
   string(TOLOWER ${Tag} dir)
 
-  SET(${Tag}_SOURCES
-      UnitTestMainInit.cpp
+    SET(${Tag}_SOURCES1
       ${dir}/Test${Tag}_AtomicOperations_int.cpp
       ${dir}/Test${Tag}_AtomicOperations_unsignedint.cpp
       ${dir}/Test${Tag}_AtomicOperations_longint.cpp
@@ -99,6 +98,9 @@ foreach(Tag Threads;Serial;OpenMP;Cuda;HPX;OpenMPTarget;HIP)
       ${dir}/Test${Tag}_Reductions_DeviceView.cpp
       ${dir}/Test${Tag}_Scan.cpp
       ${dir}/Test${Tag}_SharedAlloc.cpp
+  )
+
+  SET(${Tag}_SOURCES1
       ${dir}/Test${Tag}_SubView_a.cpp
       ${dir}/Test${Tag}_SubView_b.cpp
       ${dir}/Test${Tag}_SubView_c01.cpp
@@ -134,6 +136,8 @@ foreach(Tag Threads;Serial;OpenMP;Cuda;HPX;OpenMPTarget;HIP)
       ${dir}/Test${Tag}_View_64bit.cpp
       ${dir}/Test${Tag}_ViewResize.cpp
   )
+  SET(${Tag}_SOURCES ${Tag}_SOURCES1 ${Tag}_SOURCES2)
+
 endforeach()
 
 if(Kokkos_ENABLE_OPENMPTARGET)
@@ -161,18 +165,36 @@ if(Kokkos_ENABLE_HIP)
 endif()
 
 if(Kokkos_ENABLE_SERIAL)
+  if (Kokkos_ENABLE_CUDA AND WIN32)
+  KOKKOS_ADD_EXECUTABLE_AND_TEST(
+    UnitTest_Serial1
+    SOURCES
+    UnitTestMainInit.cpp
+    ${Serial_SOURCES1}
+    serial/TestSerial_Task.cpp
+  )
+  KOKKOS_ADD_EXECUTABLE_AND_TEST(
+    UnitTest_Serial2
+    SOURCES
+    UnitTestMainInit.cpp
+    ${Serial_SOURCES2}
+  )
+  else()
   KOKKOS_ADD_EXECUTABLE_AND_TEST(
     UnitTest_Serial
     SOURCES
+    UnitTestMainInit.cpp
     ${Serial_SOURCES}
     serial/TestSerial_Task.cpp
   )
+  endif()
 endif()
 
 if(Kokkos_ENABLE_PTHREAD)
   KOKKOS_ADD_EXECUTABLE_AND_TEST(
     UnitTest_Threads
     SOURCES ${Threads_SOURCES}
+    UnitTestMainInit.cpp
   )
 endif()
 
@@ -180,6 +202,7 @@ if(Kokkos_ENABLE_OPENMP)
   KOKKOS_ADD_EXECUTABLE_AND_TEST(
     UnitTest_OpenMP
     SOURCES
+    UnitTestMainInit.cpp
     ${OpenMP_SOURCES}
     openmp/TestOpenMP_Task.cpp
   )
@@ -195,6 +218,7 @@ if(Kokkos_ENABLE_HPX)
   KOKKOS_ADD_EXECUTABLE_AND_TEST(
     UnitTest_HPX
     SOURCES
+      UnitTestMainInit.cpp
       ${HPX_SOURCES}
       hpx/TestHPX_Task.cpp
   )
@@ -210,14 +234,62 @@ if(Kokkos_ENABLE_OPENMPTARGET)
   KOKKOS_ADD_EXECUTABLE_AND_TEST(
     UnitTest_OpenMPTarget
     SOURCES
+    UnitTestMainInit.cpp
     ${OpenMPTarget_SOURCES}
   )
 endif()
 
 if(Kokkos_ENABLE_CUDA)
+  if(WIN32)
+    KOKKOS_ADD_EXECUTABLE_AND_TEST(
+    UnitTest_Cuda1
+    SOURCES
+      UnitTestMainInit.cpp
+      ${Cuda_SOURCES1}
+    )
+
+    KOKKOS_ADD_EXECUTABLE_AND_TEST(
+    UnitTest_Cuda2
+    SOURCES
+      UnitTestMainInit.cpp
+      ${Cuda_SOURCES2}
+    )
+
+    KOKKOS_ADD_EXECUTABLE_AND_TEST(
+    UnitTest_Cuda3
+    SOURCES
+      UnitTestMainInit.cpp
+      cuda/TestCuda_Task.cpp
+      cuda/TestCudaHostPinned_SharedAlloc.cpp
+      cuda/TestCudaHostPinned_ViewCopy.cpp
+      cuda/TestCudaHostPinned_ViewAPI_a.cpp
+      cuda/TestCudaHostPinned_ViewAPI_b.cpp
+      cuda/TestCudaHostPinned_ViewAPI_c.cpp
+      cuda/TestCudaHostPinned_ViewAPI_d.cpp
+      cuda/TestCudaHostPinned_ViewAPI_e.cpp
+      cuda/TestCudaHostPinned_ViewMapping_a.cpp
+      cuda/TestCudaHostPinned_ViewMapping_b.cpp
+      cuda/TestCudaHostPinned_ViewMapping_subview.cpp
+      cuda/TestCudaUVM_SharedAlloc.cpp
+      cuda/TestCudaUVM_ViewCopy.cpp
+      cuda/TestCudaUVM_ViewAPI_a.cpp
+      cuda/TestCudaUVM_ViewAPI_b.cpp
+      cuda/TestCudaUVM_ViewAPI_c.cpp
+      cuda/TestCudaUVM_ViewAPI_d.cpp
+      cuda/TestCudaUVM_ViewAPI_e.cpp
+      cuda/TestCudaUVM_ViewMapping_a.cpp
+      cuda/TestCudaUVM_ViewMapping_b.cpp
+      cuda/TestCudaUVM_ViewMapping_subview.cpp
+      cuda/TestCuda_Spaces.cpp
+      cuda/TestCuda_DebugSerialExecution.cpp
+      cuda/TestCuda_DebugPinUVMSpace.cpp
+  )
+
+  else()
   KOKKOS_ADD_EXECUTABLE_AND_TEST(
     UnitTest_Cuda
     SOURCES
+      UnitTestMainInit.cpp
       ${Cuda_SOURCES}
       cuda/TestCuda_Task.cpp
       cuda/TestCudaHostPinned_SharedAlloc.cpp
@@ -244,6 +316,7 @@ if(Kokkos_ENABLE_CUDA)
       cuda/TestCuda_DebugSerialExecution.cpp
       cuda/TestCuda_DebugPinUVMSpace.cpp
   )
+  endif()
   KOKKOS_ADD_EXECUTABLE_AND_TEST(
     UnitTest_CudaInterOpInit
     SOURCES
@@ -260,7 +333,6 @@ endif()
 
 if(Kokkos_ENABLE_HIP)
   set(HIP_SOURCES
-      UnitTestMainInit.cpp
       hip/TestHIP_Init.cpp
       hip/TestHIP_Reductions.cpp
       hip/TestHIP_Reducers_a.cpp
@@ -293,6 +365,7 @@ if(Kokkos_ENABLE_HIP)
   KOKKOS_ADD_EXECUTABLE_AND_TEST(
     UnitTest_HIP
     SOURCES
+      UnitTestMainInit.cpp
       ${HIP_SOURCES}
   )
   KOKKOS_ADD_EXECUTABLE_AND_TEST(

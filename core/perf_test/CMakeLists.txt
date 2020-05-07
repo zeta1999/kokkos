@@ -8,6 +8,8 @@
 # we'll just allow it to be included, but note
 # that in TriBITS KokkosAlgorithms can be disabled...
 #INCLUDE_DIRECTORIES("${CMAKE_CURRENT_SOURCE_DIR}/../../algorithms/src")
+#These can be direct, no need for Tribits or Kokkos wrappers
+add_compile_options(-x cu)
 
 SET(SOURCES
   PerfTestMain.cpp
