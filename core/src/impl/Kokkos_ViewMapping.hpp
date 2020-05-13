@@ -125,14 +125,14 @@ KOKKOS_IMPL_VIEW_DIMENSION(7)
 
 #undef KOKKOS_IMPL_VIEW_DIMENSION
 
-// MSVC does not do empty base class optimization by default. 
+// MSVC does not do empty base class optimization by default.
 // Per standard it is required for standard layout types
 template <size_t... Vals>
-struct 
-    #if defined(KOKKOS_IMPL_WINDOWS_CUDA) || defined(KOKKOS_COMPILER_MSVC)
-    __declspec(empty_bases) 
-    #endif
-ViewDimension
+struct
+#if defined(KOKKOS_IMPL_WINDOWS_CUDA) || defined(KOKKOS_COMPILER_MSVC)
+    __declspec(empty_bases)
+#endif
+        ViewDimension
     : public ViewDimension0<size_t(variadic_size_t<0u, Vals...>::value),
                             unsigned(rank_dynamic<Vals...>::value)>,
       public ViewDimension1<size_t(variadic_size_t<1u, Vals...>::value),
@@ -1088,7 +1088,7 @@ struct ViewOffset<
   //----------------------------------------
 
 #ifdef KOKKOS_IMPL_WINDOWS_CUDA
-  KOKKOS_FUNCTION ViewOffset():m_dim(dimension_type()) {}
+  KOKKOS_FUNCTION ViewOffset() : m_dim(dimension_type()) {}
   KOKKOS_FUNCTION ViewOffset(const ViewOffset& src) { m_dim = src.m_dim; }
   KOKKOS_FUNCTION ViewOffset& operator=(const ViewOffset& src) {
     m_dim = src.m_dim;
@@ -1403,7 +1403,7 @@ struct ViewOffset<
 
  public:
 #ifdef KOKKOS_IMPL_WINDOWS_CUDA
-  KOKKOS_FUNCTION ViewOffset():m_dim(dimension_type()),m_stride(0) {}
+  KOKKOS_FUNCTION ViewOffset() : m_dim(dimension_type()), m_stride(0) {}
   KOKKOS_FUNCTION ViewOffset(const ViewOffset& src) {
     m_dim    = src.m_dim;
     m_stride = src.m_stride;
@@ -1717,7 +1717,7 @@ struct ViewOffset<
 
   //----------------------------------------
 #ifdef KOKKOS_IMPL_WINDOWS_CUDA
-  KOKKOS_FUNCTION ViewOffset():m_dim(dimension_type()) {}
+  KOKKOS_FUNCTION ViewOffset() : m_dim(dimension_type()) {}
   KOKKOS_FUNCTION ViewOffset(const ViewOffset& src) { m_dim = src.m_dim; }
   KOKKOS_FUNCTION ViewOffset& operator=(const ViewOffset& src) {
     m_dim = src.m_dim;
@@ -2029,7 +2029,7 @@ struct ViewOffset<
 
  public:
 #ifdef KOKKOS_IMPL_WINDOWS_CUDA
-  KOKKOS_FUNCTION ViewOffset():m_dim(dimension_type()),m_stride(0) {}
+  KOKKOS_FUNCTION ViewOffset() : m_dim(dimension_type()), m_stride(0) {}
   KOKKOS_FUNCTION ViewOffset(const ViewOffset& src) {
     m_dim    = src.m_dim;
     m_stride = src.m_stride;
@@ -2528,7 +2528,8 @@ struct ViewOffset<Dimension, Kokkos::LayoutStride, void> {
 
   //----------------------------------------
 #ifdef KOKKOS_IMPL_WINDOWS_CUDA
-  KOKKOS_FUNCTION ViewOffset():m_dim(dimension_type()),m_stride(stride_type()) {}
+  KOKKOS_FUNCTION ViewOffset()
+      : m_dim(dimension_type()), m_stride(stride_type()) {}
   KOKKOS_FUNCTION ViewOffset(const ViewOffset& src) {
     m_dim    = src.m_dim;
     m_stride = src.m_stride;
