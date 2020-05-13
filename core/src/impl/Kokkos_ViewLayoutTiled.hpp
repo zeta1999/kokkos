@@ -139,14 +139,14 @@ struct ViewOffset<
   enum : unsigned { SHIFT_5 = Kokkos::Impl::integral_power_of_two(Layout::N5) };
   enum : unsigned { SHIFT_6 = Kokkos::Impl::integral_power_of_two(Layout::N6) };
   enum : unsigned { SHIFT_7 = Kokkos::Impl::integral_power_of_two(Layout::N7) };
-  enum : size_t { MASK_0 = Layout::N0 - 1 };
-  enum : size_t { MASK_1 = Layout::N1 - 1 };
-  enum : size_t { MASK_2 = Layout::N2 - 1 };
-  enum : size_t { MASK_3 = Layout::N3 - 1 };
-  enum : size_t { MASK_4 = Layout::N4 - 1 };
-  enum : size_t { MASK_5 = Layout::N5 - 1 };
-  enum : size_t { MASK_6 = Layout::N6 - 1 };
-  enum : size_t { MASK_7 = Layout::N7 - 1 };
+  enum { MASK_0 = Layout::N0 - 1 };
+  enum { MASK_1 = Layout::N1 - 1 };
+  enum { MASK_2 = Layout::N2 - 1 };
+  enum { MASK_3 = Layout::N3 - 1 };
+  enum { MASK_4 = Layout::N4 - 1 };
+  enum { MASK_5 = Layout::N5 - 1 };
+  enum { MASK_6 = Layout::N6 - 1 };
+  enum { MASK_7 = Layout::N7 - 1 };
 
   enum : unsigned { SHIFT_2T = SHIFT_0 + SHIFT_1 };
   enum : unsigned { SHIFT_3T = SHIFT_0 + SHIFT_1 + SHIFT_2 };
