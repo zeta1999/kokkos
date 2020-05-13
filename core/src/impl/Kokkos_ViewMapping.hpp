@@ -68,17 +68,17 @@ namespace Impl {
 
 template <unsigned I, size_t... Args>
 struct variadic_size_t {
-  enum { value = KOKKOS_INVALID_INDEX };
+  constexpr static size_t value = KOKKOS_INVALID_INDEX;
 };
 
 template <size_t Val, size_t... Args>
 struct variadic_size_t<0, Val, Args...> {
-  enum { value = Val };
+  constexpr static size_t value = Val;
 };
 
 template <unsigned I, size_t Val, size_t... Args>
 struct variadic_size_t<I, Val, Args...> {
-  enum { value = variadic_size_t<I - 1, Args...>::value };
+  constexpr static size_t value = variadic_size_t<I - 1, Args...>::value;
 };
 
 template <size_t... Args>
@@ -86,19 +86,19 @@ struct rank_dynamic;
 
 template <>
 struct rank_dynamic<> {
-  enum { value = 0 };
+  constexpr static unsigned value = 0;
 };
 
 template <size_t Val, size_t... Args>
 struct rank_dynamic<Val, Args...> {
-  enum { value = (Val == 0 ? 1 : 0) + rank_dynamic<Args...>::value };
+  constexpr static unsigned value = (Val == 0 ? 1 : 0) + rank_dynamic<Args...>::value;
 };
 
 #define KOKKOS_IMPL_VIEW_DIMENSION(R)                                       \
   template <size_t V, unsigned>                                             \
   struct ViewDimension##R {                                                 \
-    enum { ArgN##R = (V != KOKKOS_INVALID_INDEX ? V : 1) };                 \
-    enum { N##R = (V != KOKKOS_INVALID_INDEX ? V : 1) };                    \
+    constexpr static size_t ArgN##R = (V != KOKKOS_INVALID_INDEX ? V : 1);  \
+    constexpr static size_t N##R = (V != KOKKOS_INVALID_INDEX ? V : 1);     \
     KOKKOS_INLINE_FUNCTION explicit ViewDimension##R(size_t) {}             \
     ViewDimension##R()                        = default;                    \
     ViewDimension##R(const ViewDimension##R&) = default;                    \
@@ -106,7 +106,7 @@ struct rank_dynamic<Val, Args...> {
   };                                                                        \
   template <unsigned RD>                                                    \
   struct ViewDimension##R<0, RD> {                                          \
-    enum { ArgN##R = 0 };                                                   \
+    constexpr static size_t ArgN##R = 0;                                    \
     typename std::conditional<(RD < 3), size_t, unsigned>::type N##R;       \
     ViewDimension##R()                        = default;                    \
     ViewDimension##R(const ViewDimension##R&) = default;                    \
@@ -185,8 +185,8 @@ struct ViewDimension : public ViewDimension0<variadic_size_t<0, Vals...>::value,
   using D6::N6;
   using D7::N7;
 
-  enum { rank = sizeof...(Vals) };
-  enum { rank_dynamic = Impl::rank_dynamic<Vals...>::value };
+  constexpr static unsigned rank = sizeof...(Vals);
+  constexpr static unsigned rank_dynamic = Impl::rank_dynamic<Vals...>::value;
 
   ViewDimension()                     = default;
   ViewDimension(const ViewDimension&) = default;
